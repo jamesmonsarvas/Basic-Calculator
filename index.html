@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            width: 400px;
+            height: 100%;
+            margin: auto;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+        }
+        
+        .form-calc {
+            width: 400px;
+            position: fixed;
+            top: 25%;
+            text-align: center;
+        }
+        
+        .form-calc .heading {
+            background: #303030;
+            padding: 10px;
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .form-calc #history {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+        }
+        
+        .form-calc .box {
+            padding: 25px;
+            background: #e3e3e3;
+        }
+        
+        .form-calc .row,
+        .form-calc .output {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .form-calc input {
+            text-transform: uppercase;
+            font-size: 18px;
+        }
+        
+        .form-calc .output {
+            position: relative;
+        }
+        
+        .form-calc .output > input,
+        .form-calc .row > input {
+            flex: 1;
+        }
+        
+        .form-calc .output input {
+            width: 100%;
+            padding: 35px 15px 10px;
+            font-size: 35px;
+            text-align: right;
+        }
+        
+        .form-calc input[type="button"] {
+            height: 50px;
+        }
+        
+        .form-calc input[type="button"].clear {
+            width: 50%;
+        }
+
+        .calc {
+            width: 400px;
+            position: fixed;
+            top: 25%;
+            text-align: center;
+            background-color: #1a1919d0;
+            color: #fff;
+        }
+
+        .calc .heading {
+            padding: 30px 30px 40px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
+
+        .calc .heading h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .calc .output {
+            position: relative;
+            padding: 0 15px 10px;
+            text-align: right;
+        }
+
+        .calc .output .history {
+            position: absolute;
+            top: -20px;
+            right: 15px;
+            color: rgba(255, 255, 255, .6);
+        }
+
+        .calc .output .display {
+            font-size: 50px;
+        }
+
+        .calc .clear {
+            grid-area: c;
+        }
+
+        .calc .clear-entry {
+            grid-area: ce;
+        }
+
+        .calc .box {
+            display: grid;
+            grid-template-areas:
+            'c c ce ce';
+            text-align: center;
+            padding: 0 1px;
+        }
+
+        .calc .btn {
+            cursor: pointer;
+            padding: 15px 15px;
+            background: #1a1919;
+            border: 1px solid rgb(255, 255, 255, .2);
+            color: #fff;
+        }
+
+        .calc .btn:hover,
+        .calc .btn:focus {
+            background: rgba(26, 25, 25, .7);
+        }
+
+        .calc .btn:active {
+            background: rgba(26, 25, 25, .3);
+        }
+
+        .calc .btn.operator,
+        .calc .clr-btn {
+            background: rgba(0, 0, 0, .3);
+        }
+
+        .calc .btn.operator:hover,
+        .calc .btn.operator:focus,
+        .calc .clr-btn:hover,
+        .calc .clr-btn:focus {
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .calc .btn.operator:active,
+        .calc .clr-btn:active {
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <!-- <form class="form-calc">
+            <div class="heading">Calculator</div>
+            <div class="box">
+                <div class="output">
+                    <p id="history"></p>
+                    <input type="text" id="output" placeholder="0" disabled>
+                </div>
+                <div class="numbers">
+                    <div class="row">
+                        <input type="button" id="clear" class="clear" value="c">
+                        <input type="button" id="clear-entry" class="clear" value="ce">
+                    </div>
+                    <div class="row">
+                        <input type="button" id="number-7" class="number" value="7">
+                        <input type="button" id="number-8" class="number" value="8">
+                        <input type="button" id="number-9" class="number" value="9">
+                        <input type="button" id="divide" class="operator" value="/">
+                    </div>
+                    <div class="row">
+                        <input type="button" id="number-6" class="number" value="4">
+                        <input type="button" id="number-5" class="number" value="5">
+                        <input type="button" id="number-4" class="number" value="6">
+                        <input type="button" id="multiply" class="operator" value="x">
+                    </div>
+                    <div class="row">
+                        <input type="button" id="number-3" class="number" value="1">
+                        <input type="button" id="number-2" class="number" value="2">
+                        <input type="button" id="number-1" class="number" value="3">
+                        <input type="button" id="minus" class="operator" value="-">
+                    </div>
+                    <div class="row">
+                        <input type="button" id="decimal" class="number" value=".">
+                        <input type="button" id="number-0" class="number" value="0">
+                        <input type="button" id="equals" class="operator" value="=">
+                        <input type="button" id="plus" class="operator" value="+">
+                    </div>
+                </div>
+            </div>
+        </form> -->
+        
+        <div class="calc">
+            <div class="heading"><h1>Calculator</h1></div>
+            <div class="output">
+                <div id="history" class="history">35 + 35 = 70</div>
+                <div id="display" class="display">123</div>
+            </div>
+            <div class="box">
+                <div id="clear" class="clear btn clr-btn">c</div>
+                <div id="clear-entry" class="clear-entry btn clr-btn">ce</div>
+                <div id="number-7" class="number btn">7</div>
+                <div id="number-8" class="number btn">8</div>
+                <div id="number-9" class="number btn">9</div>
+                <div id="divide" class="operator btn">/</div>
+                <div id="number-6" class="number btn">4</div>
+                <div id="number-5" class="number btn">5</div>
+                <div id="number-4" class="number btn">6</div>
+                <div id="multiply" class="operator btn">x</div>
+                <div id="number-3" class="number btn">1</div>
+                <div id="number-2" class="number btn">2</div>
+                <div id="number-1" class="number btn">3</div>
+                <div id="minus" class="operator btn">-</div>
+                <div id="decimal" class="number btn">.</div>
+                <div id="number-0" class="number btn">0</div>
+                <div id="equals" class="operator btn">=</div>
+                <div id="plus" class="operator btn">+</div>
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
