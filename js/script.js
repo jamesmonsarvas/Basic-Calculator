@@ -6,189 +6,237 @@ const clear = document.getElementById( 'clear' );
 const clearEntry = document.getElementById( 'clear-entry' );
 const equalBtn = document.getElementById( 'equals' );
 const history = document.getElementById( 'history' );
+const dot = document.getElementById( 'decimal' );
 
 const numbers = document.querySelectorAll( '.number' );
 const operators = document.querySelectorAll( '.operator' );
 
-// Assigning textContent
-let firstNum, secondNum, operator, total, textContent;
+display.textContent = '0';
+history.textContent = '';
 
-// Starting Condition
-const init = function() {
-    // Initialize the starting conditions
-    display.textContent = '0';
-    firstNum = '';
-    secondNum = '';
-    operator = '';
-    total = 0;
-    history.innerText = "";
+const KEY_CODE = {
+    48: '0',
+    49: '1',
+    50: '2',
+    51: '3',
+    52: '4',
+    53: '5',
+    54: '6',
+    55: '7',
+    56: '8',
+    57: '9',
+    27: 'Escape',
+    190: '.',
+    191: '/'
+};
+
+const getCode = (code) => {
+    if (!KEY_CODE[code]) {
+        console.log('Key is not existing on the provided key codes');
+        return;
+    }
+    return KEY_CODE[code];
+};
+
+// for (const key in KEY_CODE) {
+//     if (Object.hasOwnProperty.call(KEY_CODE, key)) {
+//         const element = KEY_CODE[key];
+//         document.addEventListener( 'keydown', function(e) {
+//             if ( getCode( e.keyCode ) ) {
+//                 console.log( element );
+//             }
+//         });
+//     }
+// }
+const str = '。';
+if ( str.charCodeAt() === 12290 ) {
+    str.replace(/。/g, '.');
+    console.log(str);
 }
 
-init();
+document.addEventListener( 'keydown', function(e) {
+    if ( e.keyCode === 190 ) {
+        dotFunction();
+        console.log( e );
+    }
+
+    var regex = /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g; 
+    var input = display.textContent;
+
+    if (regex.test(input)) {
+        console.log( regex.test(input) );
+    } else {
+        console.log("No Japanese characters");
+    }
+});
+
+let state = {
+    firstNum: '',
+    secondNum: '',
+    operator: '',
+    total: '',
+    keysPressed: '',
+    input: '',
+};
+
+const defaultState = {...state};
+
+const resetState = function() {
+    state = {...defaultState};
+    display.textContent = '0';
+    history.textContent = '';
+    console.log( state );
+}
+
+/**
+ * Check if the input has dot
+ * if already have don't add more
+ */
+const dotFunction = function() {
+    if (!/\./.test(state.keysPressed)) {
+        if ( state.operator === '' ) { // if operator is not selected yet
+            state.firstNum += display.textContent === '0' ? 0 + dot.textContent : dot.textContent;
+            display.textContent = state.firstNum;
+            state.input = display.textContent;
+            // no dot pressed before now, so add to keysPressed
+            state.keysPressed += state.input; // adds input because there was not a previous dot in keysPressed
+        } else {
+            state.secondNum += display.textContent === '0' ? 0 + dot.textContent : dot.textContent;
+            display.textContent = state.secondNum;
+            state.input = display.textContent;
+            // no dot pressed before now, so add to keysPressed
+            state.keysPressed += state.input; // adds input because there was not a previous dot in keysPressed
+        }
+    }
+}
 
 /**
  * Do the calculation
  * base on the selected operator
  */
 const calculate = function() {
-    if ( operator === "+" ) { // Get the sum of the textContents
-        display.textContent = parseFloat(firstNum) + parseFloat(secondNum);
-        total = Number(display.textContent);
-        firstNum = total;
-        secondNum = '';
-    } else if ( operator === "-" ) { // Get the quotient of the textContents
-        display.textContent = parseFloat(firstNum) - parseFloat(secondNum);
-        total = Number(display.textContent);
-        firstNum = total;
-        secondNum = '';
-    } else if ( operator === "*" ) { // Get the product of the textContents
-        display.textContent = parseFloat(firstNum) * parseFloat(secondNum);
-        total = Number(display.textContent);
-        firstNum = total;
-        secondNum = '';
-    } else if ( operator === "/" ) { // Get the difference of the textContents
-        display.textContent = parseFloat(firstNum) / parseFloat(secondNum);
-        total = Number(display.textContent);
-        firstNum = total;
-        secondNum = '';
+    if ( state.operator === "+" ) { // Get the sum of the textContents
+        display.textContent = parseFloat(state.firstNum) + parseFloat(state.secondNum);
+        state.total = Number(display.textContent);
+        state.firstNum = state.total;
+        state.secondNum = '';
+    } else if ( state.operator === "-" ) { // Get the quotient of the textContents
+        display.textContent = parseFloat(state.firstNum) - parseFloat(state.secondNum);
+        state.total = Number(display.textContent);
+        state.firstNum = state.total;
+        state.secondNum = '';
+    } else if ( state.operator === "*" ) { // Get the product of the textContents
+        display.textContent = parseFloat(state.firstNum) * parseFloat(state.secondNum);
+        state.total = Number(display.textContent);
+        state.firstNum = state.total;
+        state.secondNum = '';
+    } else if ( state.operator === "/" ) { // Get the difference of the textContents
+        display.textContent = parseFloat(state.firstNum) / parseFloat(state.secondNum);
+        state.total = Number(display.textContent);
+        state.firstNum = state.total;
+        state.secondNum = '';
     }
 }
+
+/**
+ * This is part of the calculation
+ */
+const operatorFunction = function() {
+    if ( display.textContent !== '' && state.secondNum !== '' ) { // if the input/display textContent is not empty do the operations
+        history.innerText = `${state.firstNum} ${state.operator} ${state.secondNum}`; // Get the first number, operator and second number and then store it
+            switch (state.operator) {
+                case "+":
+                    calculate();
+                    break;
+                case "-":
+                    calculate();
+                    break;
+                case "*":
+                    calculate();
+                    break;
+                case "/":
+                    calculate();
+                    break;
+                default:
+                    display.textContent = "Not a valid number!";
+                    break;
+            }
+        history.innerText += ` = ${state.total}`;
+    }
+}
+
+dot.addEventListener( 'click', function() {
+    dotFunction();
+});
 
 // Starting Logical
 for (let index = 0; index < numbers.length; index++) {
     /**
      * Loop though all the number
      */
-    const element = String(numbers[index].textContent);    
+    const element = String(numbers[index].textContent);
     numbers[index].addEventListener( 'click', function() { // Add an event click on the numbers
-        if ( operator === '' ) { // if operator is not selected yet
-            firstNum += element;
-            display.textContent = firstNum;
+        if (state.operator === '') {
+            state.firstNum += element;
+            display.textContent = state.firstNum;
         } else {
-            secondNum += element;
-            display.textContent = secondNum;
+            state.secondNum += element;
+            display.textContent = state.secondNum;
         }
     });
 
-    document.addEventListener( 'keydown', function( e ) {// Add an event keydown on the numbers base on the key pressed
-        if (operator === '') {
-            if ( e.key === element ) {
-                firstNum += element;
-                display.textContent = firstNum;
-            }
-        } else {
-            if ( e.key === element ) {
-                secondNum += element;
-                display.textContent = secondNum;
-            }
-        }
-    });
+    // document.addEventListener( 'keydown', function( e ) {// Add an event keydown on the numbers base on the key pressed
+    //     if (state.operator === '') {
+    //         if ( e.key === element ) {
+    //             state.firstNum += element;
+    //             state.textContent = state.firstNum;
+    //         }
+    //     } else {
+    //         if ( e.key === element ) {
+    //             state.secondNum += element;
+    //             state.textContent = state.secondNum;
+    //         }
+    //     }
+    // });
 }
 
 for( let index = 0; index < operators.length; index++ ) {
+
     operators[index].addEventListener( 'click', function() {
+        state.keysPressed = '';
+        state.input = '';
+
         if ( operators[index].textContent !== '=' ) { // if the operator is not equals to "="
             // Store the selected Operator
-            operator = operators[index].textContent;
+            state.operator = operators[index].textContent;
         } else {
-            if ( display.textContent !== 0 && secondNum !== '' ) { // if the input/display textContent is not empty do the operations
-                history.innerText = `${firstNum} ${operator} ${secondNum}`; // Get the first number, operator and second number and then store it
-                switch (operator) {
-                    case "+":
-                        calculate();
-                        break;
-                    case "-":
-                        calculate();
-                        break;
-                    case "*":
-                        calculate();
-                        break;
-                    case "/":
-                        calculate();
-                        break;
-                    default:
-                        display.textContent = "Not a valid number!";
-                        break;
-                }
-                history.innerText += ` = ${total}` // Add the total string to the history;
-            }
+            operatorFunction();
         }
     });
 
-    document.addEventListener( 'keydown', function( e ) {
-        if ( e.key !== 'Enter' ) { // if the operator is not equals to "Enter"
-            if ( e.key === operators[index].textContent ) {
-                operator = operators[index].textContent;
-            }
-        } else {
-            if ( display.textContent !== '' && secondNum !== '' ) { // if the input/display textContent is not empty do the operations
-                history.innerText = `${firstNum} ${operator} ${secondNum}`; // Get the first number, operator and second number and then store it
-                switch (operator) {
-                    case "+":
-                        calculate();
-                        break;
-                    case "-":
-                        calculate();
-                        break;
-                    case "*":
-                        calculate();
-                        break;
-                    case "/":
-                        calculate();
-                        break;
-                    default:
-                        display.textContent = "Not a valid number!";
-                        break;
-                }
-                history.innerText += ` = ${total}`;
-            }
-        }
-    });
+    // document.addEventListener( 'keydown', function( e ) {
+    //     if ( e.key !== 'Enter' || operators[index].textContent !== '=' ) { // if the operator is not equals to "Enter"
+    //         if ( e.key === operators[index].textContent ) { // Check first if the key is equals to the operator and then store it
+    //             operator = operators[index].textContent;
+    //         }
+    //     } else {
+    //         operatorFunction();
+    //     }
+    // });
 }
 
-clear.addEventListener( 'click', function() {
-    // Initialize the init to reset the value
-    init();
-});
+clear.addEventListener( 'click', resetState);
 
 clearEntry.addEventListener( 'click', function() {
-    if ( total === 0 ) { // If the total is not set yet
-        if ( operator === '' ) { // if operator is not selected yet
-            firstNum = firstNum.substring( 0, -1 );
-            display.textContent = 0;
-        } else {
-            secondNum = secondNum.substring( 0, -1 );
-            display.textContent = 0;
-        }
-    }
-    else {
-        secondNum = secondNum.substring( 0, -1 );
-        display.textContent = 0;
-    }
-});
+    let firstNum = state.firstNum;
+    let secondNum = state.secondNum;
+    let operator = state.operator;
 
-document.addEventListener( 'keydown', function( e ) {
-    console.log( e );
-    if ( display.textContent !== '0' ) {
-        if ( e.key === 'Escape' ) {
-            init();
-        }
-
-        if ( e.key === 'Backspace' ) {
-            if ( total === 0 ) {
-                if ( operator === '' ) { // if operator is not selected yet
-                    firstNum = firstNum.substring( 0, -1 );
-                    display.textContent = 0;
-                } else {
-                    secondNum = secondNum.substring( 0, -1 );
-                    display.textContent = 0;
-                }
-            }
-            else {
-                secondNum = secondNum.substring( 0, -1 );
-                display.textContent = 0;
-            }
-        }
+    if ( operator === '' ) { // if operator is not selected yet
+        state.firstNum = firstNum.substring( 0, -1 );
+        display.textContent = '0';
+    } else {
+        state.secondNum = secondNum.substring( 0, -1 );
+        display.textContent = '0';
     }
-
 });
