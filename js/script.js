@@ -11,10 +11,13 @@ const dot = document.getElementById( 'decimal' );
 const numbers = document.querySelectorAll( '.number' );
 const operators = document.querySelectorAll( '.operator' );
 
-display.textContent = '0';
+display.textContent = 0;
 history.textContent = '';
 
 const KEY_CODE = {
+    8: 'Backspace',
+    13: 'Enter',
+    27: 'Escape',
     48: '0',
     49: '1',
     50: '2',
@@ -25,16 +28,18 @@ const KEY_CODE = {
     55: '7',
     56: '8',
     57: '9',
-    27: 'Escape',
+    56: '*',
+    187: '+',
+    189: '-',
     190: '.',
     191: '/'
 };
 
 const getCode = (code) => {
     if (!KEY_CODE[code]) {
-        console.log('Key is not existing on the provided key codes');
         return;
     }
+    
     return KEY_CODE[code];
 };
 
@@ -43,32 +48,11 @@ const getCode = (code) => {
 //         const element = KEY_CODE[key];
 //         document.addEventListener( 'keydown', function(e) {
 //             if ( getCode( e.keyCode ) ) {
-//                 console.log( element );
+//                 console.log( getCode( e.keyCode ) );
 //             }
 //         });
 //     }
 // }
-const str = '。';
-if ( str.charCodeAt() === 12290 ) {
-    str.replace(/。/g, '.');
-    console.log(str);
-}
-
-document.addEventListener( 'keydown', function(e) {
-    if ( e.keyCode === 190 ) {
-        dotFunction();
-        console.log( e );
-    }
-
-    var regex = /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g; 
-    var input = display.textContent;
-
-    if (regex.test(input)) {
-        console.log( regex.test(input) );
-    } else {
-        console.log("No Japanese characters");
-    }
-});
 
 let state = {
     firstNum: '',
@@ -81,18 +65,32 @@ let state = {
 
 const defaultState = {...state};
 
-const resetState = function() {
+const resetState = () => {
     state = {...defaultState};
-    display.textContent = '0';
+    display.textContent = 0;
     history.textContent = '';
     console.log( state );
+}
+
+const clearStateEntry = () => {
+    let firstNum = state.firstNum;
+    let secondNum = state.secondNum;
+    let operator = state.operator;
+
+    if ( operator === '' ) { // if operator is not selected yet
+        state.firstNum = firstNum.substring( 0, -1 );
+        display.textContent = '0';
+    } else {
+        state.secondNum = secondNum.substring( 0, -1 );
+        display.textContent = '0';
+    }
 }
 
 /**
  * Check if the input has dot
  * if already have don't add more
  */
-const dotFunction = function() {
+const dotFunction = () => {
     if (!/\./.test(state.keysPressed)) {
         if ( state.operator === '' ) { // if operator is not selected yet
             state.firstNum += display.textContent === '0' ? 0 + dot.textContent : dot.textContent;
@@ -114,7 +112,7 @@ const dotFunction = function() {
  * Do the calculation
  * base on the selected operator
  */
-const calculate = function() {
+const calculate = () => {
     if ( state.operator === "+" ) { // Get the sum of the textContents
         display.textContent = parseFloat(state.firstNum) + parseFloat(state.secondNum);
         state.total = Number(display.textContent);
@@ -141,7 +139,7 @@ const calculate = function() {
 /**
  * This is part of the calculation
  */
-const operatorFunction = function() {
+const operatorFunction = () => {
     if ( display.textContent !== '' && state.secondNum !== '' ) { // if the input/display textContent is not empty do the operations
         history.innerText = `${state.firstNum} ${state.operator} ${state.secondNum}`; // Get the first number, operator and second number and then store it
             switch (state.operator) {
@@ -165,10 +163,6 @@ const operatorFunction = function() {
     }
 }
 
-dot.addEventListener( 'click', function() {
-    dotFunction();
-});
-
 // Starting Logical
 for (let index = 0; index < numbers.length; index++) {
     /**
@@ -185,19 +179,23 @@ for (let index = 0; index < numbers.length; index++) {
         }
     });
 
-    // document.addEventListener( 'keydown', function( e ) {// Add an event keydown on the numbers base on the key pressed
-    //     if (state.operator === '') {
-    //         if ( e.key === element ) {
-    //             state.firstNum += element;
-    //             state.textContent = state.firstNum;
-    //         }
-    //     } else {
-    //         if ( e.key === element ) {
-    //             state.secondNum += element;
-    //             state.textContent = state.secondNum;
-    //         }
-    //     }
-    // });
+    document.addEventListener( 'keydown', function( e ) {// Add an event keydown on the numbers base on the key pressed
+        if (state.operator === '') {
+            if ( getCode( e.keyCode ) ) {
+                if ( e.key === element ) {
+                    state.firstNum += element;
+                    display.textContent = state.firstNum;
+                }
+            }
+        } else {
+            if ( getCode( e.keyCode ) ) {
+                if ( e.key === element ) {
+                    state.secondNum += element;
+                    display.textContent = state.secondNum;
+                }
+            }
+        }
+    });
 }
 
 for( let index = 0; index < operators.length; index++ ) {
@@ -214,29 +212,43 @@ for( let index = 0; index < operators.length; index++ ) {
         }
     });
 
-    // document.addEventListener( 'keydown', function( e ) {
-    //     if ( e.key !== 'Enter' || operators[index].textContent !== '=' ) { // if the operator is not equals to "Enter"
-    //         if ( e.key === operators[index].textContent ) { // Check first if the key is equals to the operator and then store it
-    //             operator = operators[index].textContent;
-    //         }
-    //     } else {
-    //         operatorFunction();
-    //     }
-    // });
+    document.addEventListener( 'keydown', function( e ) {
+        if ( getCode( e.keyCode ) ) {
+            if ( e.key !== getCode( 13 ) ) { // if the operator is not equals to "Enter"
+                if ( e.key === operators[index].textContent ) { // Check first if the key is equals to the operator and then store it
+                    state.operator = e.key;
+                    console.log( state.operator );
+                }
+            } else {
+                operatorFunction();
+            }
+        }
+    });
 }
 
+dot.addEventListener( 'click', dotFunction);
 clear.addEventListener( 'click', resetState);
+clearEntry.addEventListener( 'click', clearStateEntry);
 
-clearEntry.addEventListener( 'click', function() {
-    let firstNum = state.firstNum;
-    let secondNum = state.secondNum;
-    let operator = state.operator;
+document.addEventListener( 'keydown', function( e ) {
+    if (getCode( e.keyCode )) {
+        if ( e.key === getCode( 27 ) ) {
+            resetState();
+        }
 
-    if ( operator === '' ) { // if operator is not selected yet
-        state.firstNum = firstNum.substring( 0, -1 );
-        display.textContent = '0';
-    } else {
-        state.secondNum = secondNum.substring( 0, -1 );
-        display.textContent = '0';
+        if ( e.key === getCode( 8 ) ) {
+            clearStateEntry();
+        }
+
+        if ( e.key === getCode( 190 ) ) {
+            dotFunction();
+        }
     }
 });
+
+const str = toString(display.textContent);
+let result;
+if ( str.charCodeAt() === 12290 ) {
+    result = str.replace(/。/g, '.');
+    console.log(result);
+}
