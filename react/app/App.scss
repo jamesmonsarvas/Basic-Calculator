@@ -1,0 +1,158 @@
+body {
+    width: 400px;
+    height: 100%;
+    margin: auto;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+}
+
+.form-calc {
+    width: 400px;
+    position: fixed;
+    top: 25%;
+    text-align: center;
+}
+
+.form-calc .heading {
+    background: #303030;
+    padding: 10px;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #fff;
+}
+
+.form-calc #history {
+    position: absolute;
+    top: -10px;
+    right: 15px;
+}
+
+.form-calc .box {
+    padding: 25px;
+    background: #e3e3e3;
+}
+
+.form-calc .row,
+.form-calc .output {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-calc input {
+    text-transform: uppercase;
+    font-size: 18px;
+}
+
+.form-calc .output {
+    position: relative;
+}
+
+.form-calc .output > input,
+.form-calc .row > input {
+    flex: 1;
+}
+
+.form-calc .output input {
+    width: 100%;
+    padding: 35px 15px 10px;
+    font-size: 35px;
+    text-align: right;
+}
+
+.form-calc input[type='button'] {
+    height: 50px;
+}
+
+.form-calc input[type='button'].clear {
+    width: 50%;
+}
+
+.calc {
+    width: 400px;
+    position: fixed;
+    top: 25%;
+    text-align: center;
+    background-color: #1a1919d0;
+    color: #fff;
+    overflow: hidden;
+}
+
+.calc .heading {
+    padding: 30px 30px 40px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+}
+
+.calc .heading h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.calc .output {
+    position: relative;
+    padding: 0 15px 10px;
+    text-align: right;
+}
+
+.calc .output .history {
+    position: absolute;
+    top: -20px;
+    right: 15px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.calc .output .display {
+    font-size: 50px;
+}
+
+.calc .clear {
+    grid-area: c;
+}
+
+.calc .clear-entry {
+    grid-area: ce;
+}
+
+.calc .box {
+    display: grid;
+    grid-template-areas: 'c c ce ce';
+    text-align: center;
+    padding: 0 1px;
+}
+
+.calc .btn {
+    cursor: pointer;
+    padding: 15px 15px;
+    background: #1a1919;
+    border: 1px solid rgb(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.calc .btn:hover,
+.calc .btn:focus {
+    background: rgba(26, 25, 25, 0.7);
+}
+
+.calc .btn:active {
+    background: rgba(26, 25, 25, 0.3);
+}
+
+.calc .btn.operator,
+.calc .clr-btn {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.calc .btn.operator:hover,
+.calc .btn.operator:focus,
+.calc .clr-btn:hover,
+.calc .clr-btn:focus {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.calc .btn.operator:active,
+.calc .clr-btn:active {
+    background: transparent;
+}
