@@ -49,12 +49,14 @@ const App = () => {
     };
 
     const handleKeyPress = (e) => {
-        const numbers =
-            (e.key >= 0 && e.key <= 9) || e.keyCode === 190 ? e.key : '';
-        const firstNumInput = firstNum + numbers;
-        const secondNumInput = secondNum + numbers;
+        const number =
+            (e.key >= 0 && e.key <= 9) || e.keyCode === 190 || e.keyCode === 46
+                ? e.key
+                : '';
+        const firstNumInput = firstNum + number;
+        const secondNumInput = secondNum + number;
         const operatorSelected = e.key;
-        if (numbers) {
+        if (number) {
             if (operator === '') {
                 setFirstNum(firstNumInput);
                 setCurrent(firstNumInput);
@@ -119,12 +121,13 @@ const App = () => {
     }, [firstNum, operator, secondNum]);
 
     /**
-     * Create Component Numbers that accept 'className' and object spread '...rest '
+     * Create Component Number that accept 'className' and object spread '...rest '
      */
 
     const handleNumberClick = (value) => {
         const firstNumInput = firstNum + value;
         const secondNumInput = secondNum + value;
+
         if (operator === '') {
             setFirstNum(firstNumInput);
             setCurrent(firstNumInput);
@@ -134,10 +137,10 @@ const App = () => {
         }
     };
 
-    const Numbers = ({ className = '', ...rest }) => {
+    const Number = ({ className = '', inputNum, ...rest }) => {
         return (
             <div
-                onClick={(e) => handleNumberClick(e.target.innerText)}
+                onClick={() => handleNumberClick(inputNum)}
                 className={`number btn ${className}`}
                 {...rest}
             />
@@ -162,10 +165,10 @@ const App = () => {
         }
     };
 
-    const Operators = ({ className = '', ...rest }) => {
+    const Operator = ({ className = '', operator, ...rest }) => {
         return (
             <div
-                onClick={(e) => handleOperatorClick(e.target.innerText)}
+                onClick={() => handleOperatorClick(operator)}
                 className={`operator btn ${className}`}
                 {...rest}
             />
@@ -199,10 +202,10 @@ const App = () => {
         }
     };
 
-    const Clear = ({ className, ...rest }) => {
+    const Clear = ({ className, type, ...rest }) => {
         return (
             <div
-                onClick={(e) => handleClearClick(e.target.innerText)}
+                onClick={() => handleClearClick(type)}
                 className={`btn clr-btn ${className}`}
                 {...rest}
             />
@@ -224,24 +227,60 @@ const App = () => {
                     </div>
                 </div>
                 <div className="box">
-                    <Clear className="clear">C</Clear>
-                    <Clear className="clear-entry">CE</Clear>
-                    <Numbers className="number-7">7</Numbers>
-                    <Numbers className="number-8">8</Numbers>
-                    <Numbers className="number-9">9</Numbers>
-                    <Operators className="divide">/</Operators>
-                    <Numbers className="number-4">4</Numbers>
-                    <Numbers className="number-5">5</Numbers>
-                    <Numbers className="number-6">6</Numbers>
-                    <Operators className="multiply">*</Operators>
-                    <Numbers className="number-1">1</Numbers>
-                    <Numbers className="number-2">2</Numbers>
-                    <Numbers className="number-3">3</Numbers>
-                    <Operators className="minus">-</Operators>
-                    <Numbers className="decimal">.</Numbers>
-                    <Numbers className="number-0">0</Numbers>
-                    <Operators className="equals">=</Operators>
-                    <Operators className="sum">+</Operators>
+                    <Clear type="C" className="clear">
+                        C
+                    </Clear>
+                    <Clear type="CE" className="clear-entry">
+                        CE
+                    </Clear>
+                    <Number inputNum="7" className="number-7">
+                        7
+                    </Number>
+                    <Number inputNum="8" className="number-8">
+                        8
+                    </Number>
+                    <Number inputNum="9" className="number-9">
+                        9
+                    </Number>
+                    <Operator operator="/" className="divide">
+                        /
+                    </Operator>
+                    <Number inputNum="4" className="number-4">
+                        4
+                    </Number>
+                    <Number inputNum="5" className="number-5">
+                        5
+                    </Number>
+                    <Number inputNum="6" className="number-6">
+                        6
+                    </Number>
+                    <Operator operator="*" className="multiply">
+                        *
+                    </Operator>
+                    <Number inputNum="1" className="number-1">
+                        1
+                    </Number>
+                    <Number inputNum="2" className="number-2">
+                        2
+                    </Number>
+                    <Number inputNum="3" className="number-3">
+                        3
+                    </Number>
+                    <Operator operator="-" className="minus">
+                        -
+                    </Operator>
+                    <Number inputNum="." className="decimal">
+                        .
+                    </Number>
+                    <Number inputNum="0" className="number-0">
+                        0
+                    </Number>
+                    <Operator operator="=" className="equals">
+                        =
+                    </Operator>
+                    <Operator operator="+" className="sum">
+                        +
+                    </Operator>
                 </div>
             </div>
         </div>
